@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 public class SortVisualizer extends JPanel 
 {
+
     private int[] array;
     private int[] originalArray;
     private int size;
@@ -198,7 +199,8 @@ public class SortVisualizer extends JPanel
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         JFrame frame = new JFrame("Sort Visualizer");
         frame.setSize(1000, 750);
         frame.setLocationRelativeTo(null);
@@ -221,9 +223,11 @@ public class SortVisualizer extends JPanel
 
         frame.add(welcomePanel);
         frame.setVisible(true);
+          
+        // Add Functionality Using a lambda
+        
+        startButton.addActionListener(e -> { 
 
-        startButton.addActionListener(e -> {
-            
             welcomePanel.setVisible(false);
 
             int size = 0;
@@ -240,8 +244,10 @@ public class SortVisualizer extends JPanel
             }
 
             int[] userArray = new int[size];
-            for (int i = 0; i < size; i++) {
-                while (true) {
+            for (int i = 0; i < size; i++) 
+            {
+                while(true) 
+                {
                     try {
                         String val = JOptionPane.showInputDialog("Enter element " + (i + 1) + ":");
                         if (val == null) {
@@ -256,14 +262,15 @@ public class SortVisualizer extends JPanel
             }
 
             SortVisualizer visualizer = new SortVisualizer(userArray);
-           
+
             frame.setLayout(new BorderLayout()); // array elements border 
             frame.add(visualizer, BorderLayout.CENTER);
 
             JPanel controlPanel = new JPanel(new GridLayout(2, 1));
+            
             JPanel buttonPanel = new JPanel();
             buttonPanel.setBackground(new Color(240, 248, 255));
-            
+
             JButton bubbleBtn = new JButton("Bubble Sort");
             JButton insertBtn = new JButton("Insertion Sort");
             JButton selectBtn = new JButton("Selection Sort");
@@ -271,21 +278,24 @@ public class SortVisualizer extends JPanel
             JButton pauseBtn = new JButton("Pause");
             JButton restartBtn = new JButton("Restart");
 
+            // This is a Java array — specifically, an array of JButton objects.
             JButton[] buttons = {bubbleBtn, insertBtn, selectBtn, quickSortBtn, pauseBtn, restartBtn};
+            
             // Button Front, Size, Type, Color
-            for(JButton b : buttons)
+            for (JButton b : buttons) 
             {
                 b.setFont(new Font("Arial", Font.BOLD, 16));
                 b.setFocusPainted(false);
                 b.setBackground(new Color(65, 105, 225)); // buttons background
                 b.setForeground(Color.WHITE); // buttons text color
-                
+
                 buttonPanel.add(b);
             }
 
-            bubbleBtn.addActionListener(evt -> {
-                if(!visualizer.sorting) {
-                    stepsTextArea.setText(" ");
+            // evt is a parameter (short for event) — it represents the ActionEvent triggered when the button is clicked.
+            bubbleBtn.addActionListener(evt -> { // -> means: "goes to" or "executes this code when the event happens."
+                if (!visualizer.sorting) {
+                    stepsTextArea.setText(""); //step clear
                     visualizer.array = Arrays.copyOf(visualizer.originalArray, visualizer.originalArray.length);
                     visualizer.bubbleSort();
                 }
@@ -293,15 +303,15 @@ public class SortVisualizer extends JPanel
 
             insertBtn.addActionListener(evt -> {
                 if (!visualizer.sorting) {
-                    stepsTextArea.setText(" ");
+                    stepsTextArea.setText("");
                     visualizer.array = Arrays.copyOf(visualizer.originalArray, visualizer.originalArray.length);
                     visualizer.insertionSort();
                 }
             });
 
-            selectBtn.addActionListener(evt -> {
+            selectBtn.addActionListener(evt -> { 
                 if (!visualizer.sorting) {
-                    stepsTextArea.setText(" ");
+                    stepsTextArea.setText("");
                     visualizer.array = Arrays.copyOf(visualizer.originalArray, visualizer.originalArray.length);
                     visualizer.selectionSort();
                 }
@@ -309,7 +319,7 @@ public class SortVisualizer extends JPanel
 
             quickSortBtn.addActionListener(evt -> {
                 if (!visualizer.sorting) {
-                    stepsTextArea.setText(" ");
+                    stepsTextArea.setText("");
                     visualizer.array = Arrays.copyOf(visualizer.originalArray, visualizer.originalArray.length);
                     visualizer.quickSort();
                 }
@@ -327,15 +337,17 @@ public class SortVisualizer extends JPanel
 
             JScrollPane scrollPane = new JScrollPane(stepsTextArea);
             stepsTextArea.setEditable(false);
-            stepsTextArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+            stepsTextArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
 
             JPanel sliderPanel = new JPanel();
-            JLabel speedLabel = new JLabel("Speed (ms): 100");
-            JSlider speedSlider = new JSlider(10, 1500, 100);
+            JLabel speedLabel = new JLabel("Speed (ms): 10");
+            JSlider speedSlider = new JSlider(10, 1500, 10);
+            
             speedSlider.addChangeListener(e1 -> {
                 visualizer.sleepTime = speedSlider.getValue();
                 speedLabel.setText("Speed(ms): " + visualizer.sleepTime);
             });
+            
             sliderPanel.add(speedLabel);
             sliderPanel.add(speedSlider);
 
@@ -348,3 +360,6 @@ public class SortVisualizer extends JPanel
         });
     }
 }
+
+
+
