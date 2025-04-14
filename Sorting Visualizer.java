@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 public class SortVisualizer extends JPanel 
 {
-
     private int[] array;
     private int[] originalArray;
     private int size;
@@ -18,21 +17,26 @@ public class SortVisualizer extends JPanel
     private int swapIndex2 = -1;
     private static JTextArea stepsTextArea = new JTextArea(5, 20);
 
-    public SortVisualizer(int[] userArray) {
+    public SortVisualizer(int[] userArray) 
+    {
         this.size = userArray.length;
         this.array = Arrays.copyOf(userArray, userArray.length);
         this.originalArray = Arrays.copyOf(userArray, userArray.length);
         this.setBackground(new Color(245, 245, 255)); // array elements background 
     }
 
-    public void bubbleSort() {
+    public void bubbleSort() 
+    {
         new Thread(() -> {
             sorting = true;
-            for (int i = 0; i < size - 1; i++) {
-                for (int j = 0; j < size - i - 1; j++) {
+            for (int i = 0; i < size - 1; i++) 
+            {
+                for (int j = 0; j < size - i - 1; j++) 
+                {
                     swapIndex1 = j;
                     swapIndex2 = j + 1;
-                    if (array[j] > array[j + 1]) {
+                    if (array[j] > array[j + 1]) 
+                    {
                         int temp = array[j];
                         array[j] = array[j + 1];
                         array[j + 1] = temp;
@@ -46,13 +50,16 @@ public class SortVisualizer extends JPanel
         }).start();
     }
 
-    public void insertionSort() {
+    public void insertionSort() 
+    {
         new Thread(() -> {
             sorting = true;
-            for (int i = 1; i < size; i++) {
+            for (int i = 1; i < size; i++) 
+            {
                 int key = array[i];
                 int j = i - 1;
-                while (j >= 0 && array[j] > key) {
+                while (j >= 0 && array[j] > key) 
+                {
                     swapIndex1 = j;
                     swapIndex2 = j + 1;
                     array[j + 1] = array[j];
@@ -70,12 +77,15 @@ public class SortVisualizer extends JPanel
         }).start();
     }
 
-    public void selectionSort() {
+    public void selectionSort() 
+    {
         new Thread(() -> {
             sorting = true;
-            for (int i = 0; i < size - 1; i++) {
+            for (int i = 0; i < size - 1; i++) 
+            {
                 int minIdx = i;
-                for (int j = i + 1; j < size; j++) {
+                for (int j = i + 1; j < size; j++) 
+                {
                     swapIndex1 = minIdx;
                     swapIndex2 = j;
                     if (array[j] < array[minIdx]) {
@@ -85,7 +95,8 @@ public class SortVisualizer extends JPanel
                     repaint();
                     sleepIfPaused();
                 }
-                if (minIdx != i) {
+                if (minIdx != i) 
+                {
                     int temp = array[minIdx];
                     array[minIdx] = array[i];
                     array[i] = temp;
@@ -98,7 +109,8 @@ public class SortVisualizer extends JPanel
         }).start();
     }
 
-    public void quickSort() {
+    public void quickSort() 
+    {
         new Thread(() -> {
             sorting = true;
             quickSortHelper(0, size - 1);
@@ -106,19 +118,23 @@ public class SortVisualizer extends JPanel
         }).start();
     }
 
-    private void quickSortHelper(int low, int high) {
-        if (low < high) {
+    private void quickSortHelper(int low, int high) 
+    {
+        if (low < high) 
+        {
             int pivot = partition(low, high);
             quickSortHelper(low, pivot - 1);
             quickSortHelper(pivot + 1, high);
         }
     }
 
-    private int partition(int low, int high) {
+    private int partition(int low, int high) 
+    {
         int pivot = array[high];
         int i = (low - 1);
 
-        for (int j = low; j < high; j++) {
+        for (int j = low; j < high; j++) 
+        {
             swapIndex1 = j;
             swapIndex2 = high;
             if (array[j] < pivot) {
@@ -141,10 +157,12 @@ public class SortVisualizer extends JPanel
         return i + 1;
     }
 
-    private void sleepIfPaused() {
+    private void sleepIfPaused() 
+    {
         try {
             synchronized (lock) {
-                while (paused) {
+                while (paused) 
+                {
                     lock.wait();
                 }
             }
@@ -154,43 +172,51 @@ public class SortVisualizer extends JPanel
         }
     }
 
-    private void endSort() {
+    private void endSort() 
+    {
         swapIndex1 = -1;
         swapIndex2 = -1;
         sorting = false;
         repaint();
     }
 
-    private static void appendStep(String step) {
+    private static void appendStep(String step)  // Each step is added on a new line in step by step panel.
+    {
         SwingUtilities.invokeLater(() -> stepsTextArea.append(step + "\n"));
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        int barWidth = getWidth() / size;
+    protected void paintComponent(Graphics g) 
+    {
+        super.paintComponent(g); //Clears the previous frame and prepares the drawing canvas
+        
+        int barWidth = getWidth() / size; // number bars Width 
         g.setFont(new Font("Arial", Font.BOLD, 12));
 
-        for (int i = 0; i < size; i++) {
-            int barHeight = array[i];
-            int x = i * barWidth;
-            int y = getHeight() - barHeight;
+        for(int i = 0; i < size; i++) 
+        {
+            int barHeight = array[i];  // Height = element value
+            int x = i * barWidth;     // Bar Horizontal position
+            int y = getHeight() - barHeight;  // Bar Vertical (flips Y-axis)
+            
             g.setColor(i == swapIndex1 || i == swapIndex2 ? Color.RED : (sorting ? new Color(100, 149, 237) : new Color(60, 179, 113)));
             g.fillRoundRect(x + 2, y, barWidth - 4, barHeight, 10, 10);
 
             String text = String.valueOf(array[i]);
-            int textWidth = g.getFontMetrics().stringWidth(text);
-            int textX = x + (barWidth - textWidth) / 2;
-            int textY = y - 5;
+            int textWidth = g.getFontMetrics().stringWidth(text); // Measures how wide the text will be in pixels using the current font. This helps in centering the text above the bar.
+            int textX = x + (barWidth - textWidth) / 2; //for Bar number, Calculates the X-coordinate so that the text appears horizontally centered over the bar.
+            int textY = y - 5; // Bar number Places the Y-coordinate slightly above the top of the bar, so the text doesn’t overlap the rectangle.
 
-            if (textY > 0) {
+            if (textY > 0) 
+            {
                 g.setColor(Color.BLACK);
                 g.drawString(text, textX, textY);
             }
         }
     }
 
-    public void togglePauseResume() {
+    public void togglePauseResume() 
+    {
         synchronized (lock) {
             paused = !paused;
             if (!paused) {
@@ -225,13 +251,13 @@ public class SortVisualizer extends JPanel
         frame.setVisible(true);
           
         // Add Functionality Using a lambda
-        
         startButton.addActionListener(e -> { 
 
             welcomePanel.setVisible(false);
 
             int size = 0;
-            while (size < 1 || size > 200) {
+            while (size < 1 || size > 200)
+            {
                 try {
                     String input = JOptionPane.showInputDialog("Enter number of elements (1-200):"); // abc
                     if (input == null) {
@@ -266,7 +292,7 @@ public class SortVisualizer extends JPanel
             frame.setLayout(new BorderLayout()); // array elements border 
             frame.add(visualizer, BorderLayout.CENTER);
 
-            JPanel controlPanel = new JPanel(new GridLayout(2, 1));
+            JPanel controlPanel = new JPanel(new GridLayout(2, 1)); 
             
             JPanel buttonPanel = new JPanel();
             buttonPanel.setBackground(new Color(240, 248, 255));
@@ -294,7 +320,8 @@ public class SortVisualizer extends JPanel
 
             // evt is a parameter (short for event) — it represents the ActionEvent triggered when the button is clicked.
             bubbleBtn.addActionListener(evt -> { // -> means: "goes to" or "executes this code when the event happens."
-                if (!visualizer.sorting) {
+                if (!visualizer.sorting) 
+                {
                     stepsTextArea.setText(""); //step clear
                     visualizer.array = Arrays.copyOf(visualizer.originalArray, visualizer.originalArray.length);
                     visualizer.bubbleSort();
@@ -302,7 +329,8 @@ public class SortVisualizer extends JPanel
             });
 
             insertBtn.addActionListener(evt -> {
-                if (!visualizer.sorting) {
+                if (!visualizer.sorting) 
+                {
                     stepsTextArea.setText("");
                     visualizer.array = Arrays.copyOf(visualizer.originalArray, visualizer.originalArray.length);
                     visualizer.insertionSort();
@@ -310,7 +338,8 @@ public class SortVisualizer extends JPanel
             });
 
             selectBtn.addActionListener(evt -> { 
-                if (!visualizer.sorting) {
+                if (!visualizer.sorting) 
+                {
                     stepsTextArea.setText("");
                     visualizer.array = Arrays.copyOf(visualizer.originalArray, visualizer.originalArray.length);
                     visualizer.selectionSort();
@@ -318,7 +347,8 @@ public class SortVisualizer extends JPanel
             });
 
             quickSortBtn.addActionListener(evt -> {
-                if (!visualizer.sorting) {
+                if (!visualizer.sorting) 
+                {
                     stepsTextArea.setText("");
                     visualizer.array = Arrays.copyOf(visualizer.originalArray, visualizer.originalArray.length);
                     visualizer.quickSort();
@@ -356,7 +386,7 @@ public class SortVisualizer extends JPanel
 
             frame.add(controlPanel, BorderLayout.NORTH);
             frame.add(scrollPane, BorderLayout.SOUTH);
-            frame.revalidate();
+            frame.revalidate(); // Always use revalidate() when adding/removing components
         });
     }
 }
